@@ -18,7 +18,7 @@ app.set('port', (process.env.PORT || 5000))
 .use(express.static(__dirname + '/public'))
 
 .get("/", (req, res) => {
-    res.sendFile("form.html", { root: __dirname + "/public"});
+    res.sendFile("login.html", { root: __dirname + "/public"});
  });
 
 // This says that we want the functions below to handle
@@ -128,12 +128,3 @@ function createAccount(req, res) {
     }
  }
  
- function rand(length=40) {
-    var result = "";
-    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
- }
