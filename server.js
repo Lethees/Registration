@@ -14,8 +14,12 @@ const connectionString = process.env.DATABASE_URL || "postgres://mhbcyrmdbvoijw:
 const pool = new Pool({connectionString: connectionString});
 
 
-app.set('port', (process.env.PORT || 5000));
-app.use(express.static(__dirname + '/public'));
+app.set('port', (process.env.PORT || 5000))
+.use(express.static(__dirname + '/public'))
+
+.get("/", (req, res) => {
+    res.sendFile("form.html", { root: __dirname + "/public"});
+ });
 
 // This says that we want the functions below to handle
 // any requests that come to the /getPerson endpoint
@@ -56,11 +60,11 @@ function getPerson(request, response) {
 // By separating this out from the handler above, we can keep our model
 // logic (this function) separate from our controller logic (the getPerson function)
 function getPersonFromDb(id, callback) {
-	console.log("Getting person from DB with id: " + id);
+	console.log("Getting customer from DB with id: " + id);
 
 	// Set up the SQL that we will use for our query. Note that we can make
 	// use of parameter placeholders just like with PHP's PDO.
-	const sql = "SELECT id, first, last, birthdate FROM person WHERE id = $1::int";
+	const sql = "SELECT * FROM customer WHERE id = $1::int";
 
 	// We now set up an array of all the parameters we will pass to fill the
 	// placeholder spots we left in the query.
