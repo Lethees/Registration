@@ -63,7 +63,7 @@ function insertNewUser(userName, password, firstName, lastName, phone, validId, 
             };
         });
     });
-   /* var sql2 = "INSERT INTO customer (firstName, lastName, phone, validId, username) VALUES ($3::text, $4::text, $5::text, $6::text $1::text)";
+    var sql2 = "INSERT INTO customer (firstName, lastName, phone, validId, username) VALUES ($3::text, $4::text, $5::text, $6::text $1::text)";
     var params2 = [firstName, lastName, phone, validId, userName];
     pool.query(sql2, params2, function(err, db_results) {
         if (err) {
@@ -74,7 +74,7 @@ function insertNewUser(userName, password, firstName, lastName, phone, validId, 
             //var results = {user:userName};
             callback(null, db_results);
         };
-    }); */
+    }); 
 };
 
 module.exports = {
