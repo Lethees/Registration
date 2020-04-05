@@ -13,6 +13,8 @@ const connectionString = process.env.DATABASE_URL || "postgres://mhbcyrmdbvoijw:
 // Establish a new connection to the data source specified the connection string.
 const pool = new Pool({connectionString: connectionString});
 
+app.use(express.json() );       // to support JSON-encoded bodies
+app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
 
 app.set('port', (process.env.PORT || 5000))
 .use(express.static(__dirname + '/public'))
@@ -24,8 +26,27 @@ app.set('port', (process.env.PORT || 5000))
 // This says that we want the functions below to handle
 // any requests that come to the /getPerson endpoint
 app.get('/getPerson', getPerson);
-app.post("/login", login);
+
 app.post("/createAccount", createAccount);
+
+app.get('/form.html', checkAuth, function (req, res) {
+	res.send('if you are viewing this page it means you are logged in');
+  });
+
+  app.post('/login', function (req, res) {
+	var post = req.body;
+	if (post.user === 'john' && post.password === 'johnspassword') {
+	  req.session.user_id = johns_user_id_here;
+	  res.redirect('/my_secret_page');
+	} else {
+	  res.send('Bad user/pass');
+	}
+  });
+
+  app.get('/logout', function (req, res) {
+	delete req.session.user_id;
+	res.redirect('/login');
+  });   
 
 // Start the server running
 app.listen(app.get('port'), function() {
@@ -55,6 +76,14 @@ function getPerson(request, response) {
 		}
 	});
 }
+
+function checkAuth(req, res, next) {
+	if (!req.session.user_id) {
+	  res.send('You are not authorized to view this page');
+	} else {
+	  next();
+	}
+  }
 
 // This function gets a person from the DB.
 // By separating this out from the handler above, we can keep our model
@@ -117,14 +146,66 @@ function createAccount(req, res) {
     }
  }
  
- function login(req, res) {
-    try {
-       let email = req.query.email;
-       req.session.user = email;
-    }
-    catch(error) {
-       res.write(error);
-       res.end();
-    }
- }
- 
+/****************************************************************
+ * These methods should likely be moved into a different module
+ * But they are here for ease in looking at the code
+ ****************************************************************/
+
+// Checks if the username and password match a hardcoded set
+// If they do, put the username on the session
+function handleLogin(request, response) {
+	var result = {success: false};
+
+	// We should do better error checking here to make sure the parameters are present
+	if (request.body.username == "admin" && request.body.password == "password") {
+		request.session.user = request.body.username;
+		result = {success: true};
+	}
+
+	response.json(result);
+}
+
+// If a user is currently stored on the session, removes it
+function handleLogout(request, response) {
+	var result = {success: false};
+
+	// We should do better error checking here to make sure the parameters are present
+	if (request.session.user) {
+		request.session.destroy();
+		result = {success: true};
+	}
+
+	response.json(result);
+}
+
+// This function returns the current server time
+function getServerTime(request, response) {
+	var time = new Date();
+	
+	var result = {success: true, time: time};
+	response.json(result); 
+}
+
+// This is a middleware function that we can use with any request
+// to make sure the user is logged in.
+function verifyLogin(request, response, next) {
+	if (request.session.user) {
+		// They are logged in!
+
+		// pass things along to the next function
+		next();
+	} else {
+		// They are not logged in
+		// Send back an unauthorized status
+		var result = {success:false, message: "Access Denied"};
+		response.status(401).json(result);
+	}
+}
+
+// This middleware function simply logs the current request to the server
+function logRequest(request, response, next) {
+	console.log("Received a request for: " + request.url);
+
+	// don't forget to call next() to allow the next parts of the pipeline to function
+	next();
+}
