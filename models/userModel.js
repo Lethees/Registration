@@ -9,7 +9,7 @@ const connectionString = process.env.DATABASE_URL || "postgres://mhbcyrmdbvoijw:
 // Establish a new connection to the data source specified the connection string.
 const pool = new Pool({connectionString: connectionString});
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 
