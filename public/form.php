@@ -1,6 +1,6 @@
 <?php
   $actions = array("Guest List", "Room List", "Search Guest", "New Guest", "Reservation", "New Parking", "Print Receipt", "Upd  &  Del");
-  $image = array("1.png", "2.png", "3.png", "4.png", "5.jpg", "6.png", "7.png", "8.png");
+  $image = array("/pic/1.png", "2.png", "3.png", "4.png", "5.jpg", "6.png", "7.png", "8.png");
   $button = array("dark", "info", "success", "primary", "secondary", "warning", "success", "primary");
   $web = array("guestList.php", "roomList.php", "search.php", "Register.php", "reservation.php", "parking.php", "search2.php", "search3.php");
 
@@ -12,7 +12,7 @@ if (isset($_SESSION['username']))
 }
 else
 {
-	header("Location: signIn.php");
+	header("Location: login.html");
 	die(); // we always include a die after redirects.
 }
 ?>
@@ -23,7 +23,7 @@ else
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pines Inn</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="week05.css">
+    <link rel="stylesheet" href="css/week05.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>

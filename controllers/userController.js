@@ -1,4 +1,4 @@
-const userModel = require("../models/userModels");
+const userModel = require("../models/dataModel.js");
 
 function validateUser(req, res) {
     //validate a user and password
@@ -20,9 +20,14 @@ function validateUser(req, res) {
 function createNewUser(req, res) {
     //Create a new user and password
     var userName = req.body.userName; 
-    var password = req.body.userPassword; 
+    var password = req.body.userPassword;
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var phone = req.body.phone;
+    var validId = req.body.validId;
+     
 
-    userModel.insertNewUser(userName, password, function(error, results) {
+    userModel.insertNewUser(userName, password, firstName, lastName, phone, validId, function(error, results) {
         res.json(results);
     }); 
 };

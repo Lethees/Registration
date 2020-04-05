@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <title>Sign in</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-	<link rel="stylesheet" href="week05.css">
-	<link rel="stylesheet" href="css/login.css">
+	<link rel="stylesheet" href="/css/login.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
@@ -33,15 +32,47 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text"><i class="fas fa-user"></i></span>
 						</div>
-						<input type="text" class="form-control" name="username" id="username" placeholder="Username">
+						<input type="text" class="form-control" name="userName" id="userName" placeholder="Username">
 						
 					</div>
 					<div class="input-group form-group">
 						<div class="input-group-prepend">
 							<span class="input-group-text"><i class="fas fa-key"></i></span>
 						</div>
-						<input type="password" class="form-control" name="password" id="password" placeholder="Password">
-					</div>
+						<input type="password" class="form-control" name="userPassword" id="userPassword" placeholder="Password">
+                    </div>
+                    
+                    <div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+						<input type="text" class="form-control" name="firstName" id="firstName" placeholder="First Name">
+						
+                    </div>
+                    
+                    <div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+						<input type="text" class="form-control" name="lastName" id="lastName" placeholder="Last Name">
+						
+                    </div>
+                    
+                    <div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+						<input type="text" class="form-control" name="phone" id="phone" placeholder="Phone #">
+						
+                    </div>
+
+                    <div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+						<input type="text" class="form-control" name="validId" id="validId" placeholder="Your valid ID #">
+						
+                    </div>
 					
 					<div class="row align-items-center remember" style="float: left;">
 						<input type="checkbox" required>I agree with the <pre> </pre><a href="#">Pine Inn User Agreement</a>
