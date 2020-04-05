@@ -11,7 +11,7 @@ app.set('port', (process.env.PORT || 5000))
 .use(express.static(__dirname + '/public'))
 
 .get("/", (req, res) => {
-    res.sendFile("form.php", { root: __dirname + "/public"});
+    res.sendFile("login.html", { root: __dirname + "/public"});
  });
 
  const userController = require("./controllers/userController.js");
