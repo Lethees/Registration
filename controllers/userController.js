@@ -21,15 +21,17 @@ function createNewUser(req, res) {
     //Create a new user and password
     var userName = req.body.userName; 
     var password = req.body.userPassword;
-    var firstName = req.body.firstName;
+    /*var firstName = req.body.firstName;
     var lastName = req.body.lastName;
     var phone = req.body.phone;
-    var validId = req.body.validId;
-     
-
-    userModel.insertNewUser(userName, password, firstName, lastName, phone, validId, function(error, results) {
+    var validId = req.body.validId;*/
+    userModel.insertNewUser(userName, password, function(error, results) {
         res.json(results);
     }); 
+
+   // userModel.insertNewUser(userName, password, firstName, lastName, phone, validId, function(error, results) {
+   //     res.json(results);
+  //  }); 
 };
 
 module.exports = {

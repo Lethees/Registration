@@ -48,9 +48,9 @@ function insertNewUser(userName, password, firstName, lastName, phone, validId, 
     var enteredPassword = password;
     bcrypt.hash(enteredPassword, saltRounds, function(err, hash) {
         var sql1 = "INSERT INTO login (username, password) VALUES ($1::text,$2::text)";
-        var sql2 = "INSERT INTO customer (firstName, lastName, phone, validId, username) VALUES ($3::text, $4::text, $5::text, $6::text $1::text)";
+        
         var params = [userName, hash];
-        var params2 = [firstName, lastName, phone, validId, userName]; 
+        
 
         pool.query(sql1, params, function(err, db_results) {
             if (err) {
@@ -62,17 +62,19 @@ function insertNewUser(userName, password, firstName, lastName, phone, validId, 
                 callback(null, db_results);
             };
         });
-        pool.query(sql2, params2, function(err, db_results) {
-            if (err) {
-                console.log("An error occurred with the DB");
-                console.log(err);
-                callback(err, null);
-            }else {
-                //var results = {user:userName};
-                callback(null, db_results);
-            };
-        });
     });
+   /* var sql2 = "INSERT INTO customer (firstName, lastName, phone, validId, username) VALUES ($3::text, $4::text, $5::text, $6::text $1::text)";
+    var params2 = [firstName, lastName, phone, validId, userName];
+    pool.query(sql2, params2, function(err, db_results) {
+        if (err) {
+            console.log("An error occurred with the DB");
+            console.log(err);
+            callback(err, null);
+        }else {
+            //var results = {user:userName};
+            callback(null, db_results);
+        };
+    }); */
 };
 
 module.exports = {
