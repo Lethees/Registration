@@ -1,174 +1,95 @@
-var express = require('express');
+const { Pool } = require('pg');
 
-var app = express();
+const connectionString = process.env.DATABASE_URL || "postgres://mhbcyrmdbvoijw:0480dbecdc962bd96d8d2b8095bf40d06c69952effb1579597d5bffe6da2be45@ec2-34-193-42-173.compute-1.amazonaws.com:5432/d6babf4h0j1n8v";
 
+const pool = new Pool({ connectionString: connectionString });
 
-app.use(express.json() );       // to support JSON-encoded bodies
-app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
-
-app.set('port', (process.env.PORT || 5000))
-
-.use(express.static(__dirname + '/public'))
-
-.get("/", (req, res) => {
-    res.sendFile("login.html", { root: __dirname + "/public"});
- });
-
- const userController = require("./controllers/userController.js");
-
-
-
- app.post("/login", userController.validateUser);
- app.post("/createAccount", userController.createNewUser);
-
-
-app.get('/getPerson', getPerson);
-
-app.get('/reservation', getReservation);
-
-app.get('/dashboard', checkUserSession, function(req,res) {
-	// Your code here
-  });
-  
-  function checkUserSession( req, res, next )
-  {
-	  if( req.session.user_id )
-	  {
-		  next();
-	  }
-	  else
-	  {
-		res.send('You are not authorized to view this page');  
-		res.redirect('/login');
-	  }
-  }  
-
-// Start the server running
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
-
-// This function handles requests to the /getPerson endpoint
-// it expects to have an id on the query string, such as: http://localhost:5000/getPerson?id=1
-function getReservation(request, response) {
-	// First get the person's id
-	const username = request.query.username;
-
-	// TODO: We should really check here for a valid id before continuing on...
-
-	// use a helper function to query the DB, and provide a callback for when it's done
-	getReservationFromDb(username, function(error, result) {
-		// This is the callback function that will be called when the DB is done.
-		// The job here is just to send it back.
-
-		// Make sure we got a row with the person, then prepare JSON to send back
-		if (error || result == null || result.length != 1) {
-			response.status(500).json({success: false, data: error});
-		} else {
-			const person = result[0];
-			response.status(200).json(person);
-		}
-	});
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
 }
 
-// This function gets a person from the DB.
-// By separating this out from the handler above, we can keep our model
-// logic (this function) separate from our controller logic (the getPerson function)
-function getReservationFromDb(username, callback) {
-	console.log("Getting customer from DB with username: " + username);
+const express = require('express')
+const app = express()
+const bcrypt = require('bcrypt')
+const passport = require('passport')
+const flash = require('express-flash')
+const session = require('express-session')
+const methodOverride = require('method-override')
 
-	// Set up the SQL that we will use for our query. Note that we can make
-	// use of parameter placeholders just like with PHP's PDO.
-	const sql = "SELECT * FROM customer WHERE username = $1::varchar";
+const initializePassport = require('./passport-config')
+initializePassport(
+  passport,
+  email => users.find(user => user.email === email),
+  id => users.find(user => user.id === id)
+)
 
-	// We now set up an array of all the parameters we will pass to fill the
-	// placeholder spots we left in the query.
-	const params = [username];
+const users = []
 
-	// This runs the query, and then calls the provided anonymous callback function
-	// with the results.
-	pool.query(sql, params, function(err, result) {
-		// If an error occurred...
-		if (err) {
-			console.log("Error in query: ")
-			console.log(err);
-			callback(err, null);
-		}
+app.set('view-engine', 'ejs')
+app.use(express.urlencoded({ extended: false }))
+app.use(flash())
+app.use(session({
+  secret: 'process.env.SESSION_SECRET',
+  resave: false,
+  saveUninitialized: false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(methodOverride('_method'))
 
-		// Log this to the console for debugging purposes.
-		console.log("Found result: " + JSON.stringify(result.rows));
+app.get('/', checkAuthenticated, (req, res) => {
+  res.render('index.ejs', { name: req.user.name })
+})
 
+app.get('/login', checkNotAuthenticated, (req, res) => {
+  res.render('login.ejs')
+})
 
-		// When someone else called this function, they supplied the function
-		// they wanted called when we were all done. Call that function now
-		// and pass it the results.
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
 
-		// (The first parameter is the error variable, so we will pass null.)
-		callback(null, result.rows);
-	});
+app.get('/register', checkNotAuthenticated, (req, res) => {
+  res.render('register.ejs')
+})
 
-} // end of getPersonFromDb
+app.post('/register', checkNotAuthenticated, async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    users.push({
+      id: Date.now().toString(),
+      email: req.body.email,
+      password: hashedPassword
+    })
+    res.redirect('/login')
+  } catch {
+    res.redirect('/register')
+  }
+})
 
-// This function handles requests to the /getPerson endpoint
-// it expects to have an id on the query string, such as: http://localhost:5000/getPerson?id=1
-function getPerson(request, response) {
-	// First get the person's id
-	const username = request.query.username;
+app.delete('/logout', (req, res) => {
+  req.logOut()
+  res.redirect('/login')
+})
 
-	// TODO: We should really check here for a valid id before continuing on...
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
 
-	// use a helper function to query the DB, and provide a callback for when it's done
-	getPersonFromDb(username, function(error, result) {
-		// This is the callback function that will be called when the DB is done.
-		// The job here is just to send it back.
-
-		// Make sure we got a row with the person, then prepare JSON to send back
-		if (error || result == null || result.length != 1) {
-			response.status(500).json({success: false, data: error});
-		} else {
-			const person = result[0];
-			response.status(200).json(person);
-		}
-	});
+  res.redirect('/login')
 }
 
-// This function gets a person from the DB.
-// By separating this out from the handler above, we can keep our model
-// logic (this function) separate from our controller logic (the getPerson function)
-function getPersonFromDb(username, callback) {
-	console.log("Getting customer from DB with username: " + username);
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/')
+  }
+  next()
+}
 
-	// Set up the SQL that we will use for our query. Note that we can make
-	// use of parameter placeholders just like with PHP's PDO.
-	const sql = "SELECT * FROM customer WHERE username = $1::varchar";
-
-	// We now set up an array of all the parameters we will pass to fill the
-	// placeholder spots we left in the query.
-	const params = [username];
-
-	// This runs the query, and then calls the provided anonymous callback function
-	// with the results.
-	pool.query(sql, params, function(err, result) {
-		// If an error occurred...
-		if (err) {
-			console.log("Error in query: ")
-			console.log(err);
-			callback(err, null);
-		}
-
-		// Log this to the console for debugging purposes.
-		console.log("Found result: " + JSON.stringify(result.rows));
-
-
-		// When someone else called this function, they supplied the function
-		// they wanted called when we were all done. Call that function now
-		// and pass it the results.
-
-		// (The first parameter is the error variable, so we will pass null.)
-		callback(null, result.rows);
-	});
-
-} // end of getPersonFromDb
+app.listen(3000)
 
 
 
