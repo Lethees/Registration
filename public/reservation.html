@@ -14,8 +14,7 @@
   </head>
   <body>    
     <div class="jumbotron text-center">
-        <h1>Welcome to Pines Inn, Annandale, VA</h1>
-        <p>This page is only accessible for Pines Inn Administration staff</p> 
+        <h1>Welcome to Pines Inn, Annandale, VA</h1> 
     </div>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-end">
         <ul class="navbar-nav">
@@ -36,7 +35,7 @@
     <div class="container">
      <h2>A new Reservation</h2>
      <button class="btn btn-outline-dark" id="btnB" onclick="window.location.href = '/';">Return to the Menu</button>
-    <form method="post" action="insertNewReservation.php">
+    <form method="post" action="/insert">
 
     <div class="form-group">
         <label for="FirstName">First Name:</label>
@@ -51,13 +50,19 @@
       </div>
 
       <div class="form-group">
-        <label for="LastName">Last Name:</label>
-        <input type="text" class="form-control" id="LastName" name="LastName" required>
+        <label for="Phone">Phone:</label>
+        <input type="text" class="form-control" id="Phone" name="Phone" required>
         <div class="valid-feedback">Valid.</div>
       </div>
 
       <div class="form-group">
-        <label for="RoomNumber">Room Number:</label>
+        <label for="validID">valid ID:</label>
+        <input type="text" class="form-control" id="validID" name="validID" required>
+        <div class="valid-feedback">Valid.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="RoomNumber">Room Number(201-211): </label>
         <input type="text" class="form-control" id="RoomNumber" name="RoomNumber" required >
         <div class="valid-feedback">Valid.</div>
       </div>
@@ -87,7 +92,7 @@
         });
     </script>
 
-    <button type="submit" class="btn btn-dark">Register</button>
+    <button type="submit" class="btn btn-dark">Book</button>
     <br>
     <br>
     </form>

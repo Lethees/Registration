@@ -4,10 +4,10 @@ const connectionString = process.env.DATABASE_URL || "postgres://mhbcyrmdbvoijw:
 
 const pool = new Pool({ connectionString: connectionString });
 
-
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
+const insert = require('./reservation');
 
 const express = require('express')
 const app = express()

@@ -3,7 +3,7 @@ function get_db() {
    $db = NULL;
    try
    {
-     $dbUrl = getenv('DATABASE_URL');
+     $dbUrl = getenv('postgres://mhbcyrmdbvoijw:0480dbecdc962bd96d8d2b8095bf40d06c69952effb1579597d5bffe6da2be45@ec2-34-193-42-173.compute-1.amazonaws.com:5432/d6babf4h0j1n8v');
    
      $dbOpts = parse_url($dbUrl);
    
