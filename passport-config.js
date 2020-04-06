@@ -5,7 +5,7 @@ const connectionString = process.env.DATABASE_URL || "postgres://mhbcyrmdbvoijw:
 const pool = new Pool({ connectionString: connectionString });
 
 const LocalStrategy = require('passport-local').Strategy
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 function initialize(passport, getUserByEmail, getUserById) {
   const authenticateUser = async (email, password, done) => {
