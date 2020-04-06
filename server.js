@@ -38,13 +38,18 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
 
-app.get('/', checkAuthenticated, (req, res) => {
-  res.render('index.ejs', { name: req.user.name })
+.get('/', checkAuthenticated, function(req, res) {
+  res.sendFile('index.html', { root: __dirname + "/public"});
+})
+
+.get('/reservation', checkAuthenticated, function(req, res) {
+  res.sendFile('reservation.html', { root: __dirname + "/public"});
 })
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs')
 })
+
 
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   successRedirect: '/',
